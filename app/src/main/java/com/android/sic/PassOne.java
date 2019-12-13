@@ -15,7 +15,7 @@ public class PassOne {
     List<String> Address = new ArrayList<String>();
     List<String> error;
     List<String> objectCode = new ArrayList<String>();
-    boolean isStrat = false;
+    boolean isStart = false;
     boolean faild = false;
     boolean haveObjCode = false;
     PassTwo passTwo;
@@ -34,7 +34,7 @@ public class PassOne {
         obj.CreateObj();
         for (int i = 1; i < line.size(); i++) {
 
-            if (IsBasicDirective(i) && i == line.size() - 1 && !isStrat) {
+            if (IsBasicDirective(i) && i == line.size() - 1 && !isStart) {
                 return;
             }
             if (Instruction(i)) {
@@ -64,7 +64,7 @@ public class PassOne {
 
             // if line is first line or end line check IsDirective
             if (i == 0 || i == line.size() - 1) {
-                if (IsBasicDirective(i) && i == 0 && isStrat) {
+                if (IsBasicDirective(i) && i == 0 && isStart) {
                     Labels.add(line.get(i)[LABEL]
                             .replaceAll(" ", "")
                             .replaceAll("\t", ""));
@@ -75,7 +75,7 @@ public class PassOne {
                 } else if (IsBasicDirective(i) && i == line.size() - 1)
                     return;
             }
-            if (i == 0 && !isStrat) {
+            if (i == 0 && !isStart) {
                 error.add("at line" + (i + 1) + "it's not a start ");
                 return;
             }
@@ -85,14 +85,12 @@ public class PassOne {
                 Labels.add(line.get(i)[LABEL]
                         .replaceAll(" ", "")
                         .replaceAll("\t", ""));
-                // address = Integer.parseInt(Address.get(i - 1)) + 3;
                 address = Integer.parseInt(Address.get(i - 1), 10) + 3;
 
                 Address.add(String.valueOf(address));
                 sym.set_sym_address(Labels.get(i), address);
 
             } else if (Instruction(i)) {
-                //  address = Integer.parseInt(Address.get(i - 1)) + 3;
                 address = Integer.parseInt(Address.get(i - 1), 10) + 3;
 
                 Address.add(String.valueOf(address));
@@ -214,11 +212,11 @@ public class PassOne {
 
         String IsDirective = line.get(i)[INSTRUCTION].replaceAll(" ", "").replaceAll("\t", "");
         if (IsDirective.equals("START")) {
-            isStrat = true;
+            isStart = true;
             return true;
         }
         if (IsDirective.equals("END")) {
-            isStrat = false;
+            isStart = false;
             return true;
         } else return false;
 
